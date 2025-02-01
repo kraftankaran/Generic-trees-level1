@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.Stack;
 
+import org.w3c.dom.Node;
+
 public class tree {
 
     private static class  Node{
@@ -73,6 +75,20 @@ public class tree {
           h+= 1;
         return h;
      }
+     public static void Traversal(Node root ){
+
+
+        System.out.println( " node pre "+  root.data);
+        for(Node child : root.children){
+            System.out.println("edge pre " + root.data + "--" + child.data);
+
+            Traversal(child);
+            System.out.println("edge post" + root.data + "--" + child.data);
+
+        }
+        System.out.println("node post " + root.data);
+
+     }
 
 
 
@@ -105,6 +121,7 @@ public class tree {
 
          display(root);
          System.out.println(MaxElement(root));
+         Traversal(root);
 
     }
     
