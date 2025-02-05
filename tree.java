@@ -333,6 +333,111 @@ public class tree {
     return false;
      }
 
+     public static ArrayList<Integer> NodetoRootPath(Node node, int data){
+
+        if(node.data== data){
+            ArrayList<Integer> list = new ArrayList<>();
+            list.add(data);
+            return list;
+        }
+
+        for(Node child :node.children){
+            ArrayList<Integer> ctnode = NodetoRootPath(child, data);
+            if(ctnode.size()>0){
+                ctnode.add(node.data);
+                return ctnode;
+
+            }
+
+        }
+        return new ArrayList<>();
+     }
+
+      public static int LowestCommonAncesstor(Node node, int d1, int d2){
+
+        ArrayList<Integer>  p1 = NodetoRootPath(node, d1) ;
+        ArrayList <Integer> p2 = NodetoRootPath(node, d2);
+        int i = p1.size()-1;
+        int j = p2.size()-1;
+        while (i>=0 && j>= 0 && p1.get(i)==p2.get(j)) {
+            i--;
+            j--;
+
+            
+        }
+        i++;
+        j++;
+
+        return p1.get(i);
+
+      }
+
+      public static int DistanceBtwNodes(Node node,int  d1, int d2 ){
+
+        ArrayList <Integer> p1 = NodetoRootPath(node,d1);
+        ArrayList<Integer> p2 =  NodetoRootPath(node, d2);
+        int i = p1.size() -1;
+         int j = p2.size()-1;
+        while (i>=0 && j>=0 && p1.get(i)== p2.get(j)) {
+            i--;
+            j--;
+
+            
+        }
+        i++;
+        j++;
+
+        return i+j;
+      }
+
+      public static boolean isSimilar(Node root1, Node root2) {
+        // Base case: if both roots are null, they are similar
+        if (root1 == null && root2 == null) {
+            return true;
+        }
+        // If one is null and the other is not, they are not similar
+        if (root1 == null || root2 == null) {
+            return false;
+        }
+        // If the number of children is different, they are not similar
+        if (root1.children.size() != root2.children.size()) {
+            return false;
+        }
+        // Recursively check each pair of children
+        for (int i = 0; i < root1.children.size(); i++) {
+            Node c1 = root1.children.get(i);
+            Node c2 = root2.children.get(i);
+            if (!isSimilar(c1, c2)) {
+                return false;
+            }
+        }
+        // If all checks pass, the trees are similar
+        return true;
+    }
+
+
+    public static boolean areMirrorShape(Node root1, Node root2){
+
+        if(root1 == null && root2==null){
+            return true;
+        }
+        if(root1.children.size()!= root2.children.size()){
+            return false;
+        }
+        for(int i =0;i<root1.children.size();i++){
+            int j = root1.children.size()-1-i;
+            Node lofr1= root1.children.get(i);
+            Node rofr2 = root2.children.get(j);
+            if(!areMirrorShape(lofr1, rofr2)){
+                return false;
+            }
+
+        }
+        
+
+        return true;
+    }
+
 
 
     public static void main(String[] args) {
@@ -376,7 +481,8 @@ public class tree {
 
          System.out.println("level4");
          LevelorderLineWise4(root);
-
+        System.out.println(LowestCommonAncesstor(root,40, 90));
+        System.out.println(DistanceBtwNodes(root, 70,110 ));
 
 
     }
