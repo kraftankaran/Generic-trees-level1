@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.Queue;
 import java.util.Stack;
 
+import javax.print.DocFlavor.STRING;
+
 public class tree {
 
     private static class  Node{
@@ -421,6 +423,7 @@ public class tree {
         if(root1 == null && root2==null){
             return true;
         }
+
         if(root1.children.size()!= root2.children.size()){
             return false;
         }
@@ -433,10 +436,178 @@ public class tree {
             }
 
         }
-        
+
 
         return true;
     }
+
+    public static boolean isSymmetric(Node root){
+        return areMirrorShape(root, root);
+    }
+
+
+    static int min ;
+     static int max;
+      static int height;
+      static int size;
+
+      public static void Multisolver(Node node , int depth){
+
+        size ++;
+        max = Math.max(max,node.data );
+        min = Math.min(min, node.data);
+        height = Math.max(height, depth);
+
+
+        for(Node child:node.children){
+            Multisolver(child, depth+1);
+        }
+      }
+
+
+      static  Node predecessor;
+       static Node  sucesstor;
+       static int state;
+        
+
+       public static void preAndSuccess(Node node , int data){
+        if(state ==0 ){
+            if(node.data== data){
+                state =1;
+            }
+            else{
+                predecessor = node;
+            }
+        
+        }
+         else if(state ==1){
+            sucesstor = node;
+            state= 2;
+
+        }
+
+
+        for(Node child: node.children){
+            preAndSuccess(child, data);
+        }
+
+
+       }
+
+       static int ceil= Integer.MAX_VALUE;
+       static int floor= Integer.MIN_VALUE;
+       public static void ceilAndFloor(Node node, int data){
+        if(node.data< data){
+            if(node.data> floor){
+                floor = node.data;
+
+            }
+        }
+        else if(node.data > data){
+            if(node.data<ceil){
+                ceil = node.data;
+
+            }
+        }
+
+        for(Node child:node.children){
+            ceilAndFloor(child, data);
+        }
+       }
+
+    static int msn =0;
+    static int ms =Integer.MIN_VALUE;
+    public static int  MaxsumSubtree(Node node){
+
+        int sum =0;
+        for(Node child:node.children){
+            int childsum = MaxsumSubtree(child);
+            sum += childsum;
+        }
+        sum += node.data;
+
+        if(sum> ms){
+            ms = sum;
+            msn =node.data;
+        }
+
+
+        return sum;
+    }
+    static int dia =0;
+     static int CalHeightAndGiveDia(Node node){
+        int dh = -1;
+        int sdh =-1;
+        for(Node child: node.children){
+            int ch = CalHeightAndGiveDia(child);
+
+            if(ch>dh){
+                dh = ch;
+
+            }else if(ch>sdh){
+                sdh = ch;
+
+            }
+        }
+    int factor = dh +sdh+2;
+    if(factor> dia){
+        dia = factor;
+
+      } 
+      dh++;
+        return dh;
+     }
+
+
+     public static class PPair{
+        Node node;
+        int state;
+        PPair(Node node, int state){
+            this.node = node;
+             this.state =state;
+        }
+     }
+
+
+     public static String iterativePrePost(Node node ){
+        String pre ="";
+        String post= "";
+
+        Stack<PPair> st = new Stack<>();
+        st.push(new PPair(node,-1 ));
+        while (st.size()>0) {
+
+            PPair top = st.peek();
+
+            if(top.state==-1){
+                pre += top.node.data +" ";
+                top.state ++;
+
+
+            }else if(top.state == top.node.children.size()){
+                post += top.node.data + " ";
+                st.pop();
+
+
+            }
+            else
+            {
+                PPair t = new PPair(top.node.children.get(top.state), -1);
+                top.state++;
+                st.push(t);
+
+            }
+            
+        }
+
+        return "preorder is " + pre + "  "+ "postOrder is"+ post ;
+
+     }
+
+        
+
+
+
 
 
 
@@ -462,7 +633,6 @@ public class tree {
                 st.push(t);
 
 
-
             }
             
          }
@@ -483,6 +653,33 @@ public class tree {
          LevelorderLineWise4(root);
         System.out.println(LowestCommonAncesstor(root,40, 90));
         System.out.println(DistanceBtwNodes(root, 70,110 ));
+        System.out.println(isSymmetric(root));
+        size =0;
+        min= Integer.MAX_VALUE;
+         max =Integer.MIN_VALUE;
+         height = 0;
+         Multisolver(root, 0);
+
+         System.out.println( max + ""+ min + "" + size + " "+ height);
+
+         predecessor =null; 
+         sucesstor =null ;
+          state =0;
+        preAndSuccess(root, 100);
+        System.out.println(predecessor.data);
+        // System.out.println(sucesstor.data);
+        MaxsumSubtree(root);
+        System.out.println(ms + "@" + ms);
+
+        System.out.println("dia maerter is ");
+        CalHeightAndGiveDia(root);
+        System.out.println(dia);
+        System.out.println( 
+            iterativePrePost(root));
+
+        
+
+
 
 
     }
